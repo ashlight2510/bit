@@ -317,6 +317,34 @@
       padding: 20px;
     }
 
+    /* 광고 영역 스타일 */
+    .ad-container {
+      margin: 30px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 250px;
+      background: rgba(28, 28, 28, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .ad-container.horizontal {
+      min-height: 250px;
+    }
+
+    .ad-container.vertical {
+      min-height: 300px;
+    }
+
+    .ad-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 24px;
@@ -329,6 +357,11 @@
       .card {
         padding: 20px;
       }
+
+      .ad-container {
+        margin: 20px auto;
+        padding: 15px;
+      }
     }
   </style>
 </head>
@@ -337,6 +370,18 @@
   <div class="container">
     <h1>💸 비트코인 안 산 죄 계산기</h1>
     <p class="subtitle">그때 샀다면 지금 얼마일까? 과거의 나를 소환 중...</p>
+
+    <!-- 상단 광고 -->
+    <div class="ad-container horizontal">
+      <div style="text-align: center; width: 100%;">
+        <div class="ad-label">광고</div>
+        <ins class="kakao_ad_area" 
+             style="display:none;"
+             data-ad-unit="DAN-CsFpcV3yGdUWIXNo"
+             data-ad-width="300"
+             data-ad-height="250"></ins>
+      </div>
+    </div>
 
     <div class="card">
       <label>언제 살 수 있었나? 📅</label>
@@ -372,8 +417,23 @@
       <button onclick="calculate()">🔍 계산하기 - 인생의 타이밍 확인</button>
     </div>
 
+    <!-- 입력 카드와 결과 사이 광고 -->
+    <div class="ad-container horizontal">
+      <div style="text-align: center; width: 100%;">
+        <div class="ad-label">광고</div>
+        <ins class="kakao_ad_area" 
+             style="display:none;"
+             data-ad-unit="DAN-CsFpcV3yGdUWIXNo"
+             data-ad-width="300"
+             data-ad-height="250"></ins>
+      </div>
+    </div>
+
     <div id="result" class="card">
-      <div id="loading" class="loading-text">과거의 나를 소환 중... 그때의 나는 왜 그랬을까 로딩 중...</div>
+      <div id="loading" class="loading-text">
+        <div style="margin-bottom: 12px;">과거의 나를 소환 중... 그때의 나는 왜 그랬을까 로딩 중...</div>
+        <div style="font-size: 14px; opacity: 0.6; margin-top: 8px;" id="loadingDetail"></div>
+      </div>
       
       <div id="output" class="result-main">
         <h2 style="margin-top: 0;">결과</h2>
@@ -432,11 +492,38 @@
       </div>
     </div>
 
+    <!-- 결과 아래 광고 -->
+    <div class="ad-container horizontal">
+      <div style="text-align: center; width: 100%;">
+        <div class="ad-label">광고</div>
+        <ins class="kakao_ad_area" 
+             style="display:none;"
+             data-ad-unit="DAN-CsFpcV3yGdUWIXNo"
+             data-ad-width="300"
+             data-ad-height="250"></ins>
+      </div>
+    </div>
+
+    <!-- 푸터 위 광고 -->
+    <div class="ad-container horizontal">
+      <div style="text-align: center; width: 100%;">
+        <div class="ad-label">광고</div>
+        <ins class="kakao_ad_area" 
+             style="display:none;"
+             data-ad-unit="DAN-CsFpcV3yGdUWIXNo"
+             data-ad-width="300"
+             data-ad-height="250"></ins>
+      </div>
+    </div>
+
     <footer>
       <p>© 2025 비트코인 안 산 죄 연구소</p>
       <p style="margin-top: 8px; font-size: 11px;">투자 권유가 아닙니다. 인생의 타이밍이 얼마나 잔인한지 보여주는 재미 사이트입니다.</p>
     </footer>
   </div>
+
+  <!-- 카카오 애드핏 스크립트 -->
+  <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
 
   <script>
     const USD_KRW = 1400; // USD → KRW 환율 (실제로는 API에서 가져오는 게 좋음)
@@ -456,6 +543,103 @@
       "40대": { avg: 30000000, percentile: 0.08 },
       "50대": { avg: 50000000, percentile: 0.05 }
     };
+
+    // 비트코인 과거 가격 데이터 (USD, 주요 날짜별)
+    // CORS 문제를 피하기 위해 정적 데이터로 포함
+    const BTC_HISTORY_PRICES = {
+      "2010-01-01": 0.003,
+      "2011-01-01": 0.3,
+      "2012-01-01": 5.27,
+      "2013-01-01": 13.30,
+      "2013-12-01": 946.92,
+      "2014-01-01": 770.44,
+      "2015-01-01": 314.24,
+      "2015-12-01": 362.73,
+      "2016-01-01": 434.46,
+      "2016-12-01": 963.74,
+      "2017-01-01": 998.33,
+      "2017-06-01": 2452.18,
+      "2017-12-15": 17568.00, // 불장 시점
+      "2017-12-31": 14156.40,
+      "2018-01-01": 14156.40,
+      "2018-12-01": 4103.46,
+      "2019-01-01": 3843.52,
+      "2019-12-01": 7564.00,
+      "2020-01-01": 7200.00,
+      "2020-03-12": 4970.00, // 코로나 폭락장
+      "2020-12-01": 19645.00,
+      "2021-01-01": 29374.15,
+      "2021-04-01": 58750.00,
+      "2021-11-10": 67500.00, // 신고가
+      "2021-12-01": 57292.00,
+      "2022-01-01": 47734.00,
+      "2022-12-01": 17150.00,
+      "2023-01-01": 16600.00,
+      "2023-12-01": 37700.00,
+      "2024-01-01": 42200.00,
+      "2024-12-01": 63000.00
+    };
+
+    // 날짜로부터 비트코인 가격 가져오기 (보간법 사용)
+    function getBTCPriceForDate(dateStr) {
+      const targetDate = new Date(dateStr);
+      
+      // 정확한 날짜 매칭
+      if (BTC_HISTORY_PRICES[dateStr]) {
+        return BTC_HISTORY_PRICES[dateStr];
+      }
+
+      // 가장 가까운 과거 날짜 찾기
+      let closestDate = null;
+      let closestPrice = null;
+      let minDiff = Infinity;
+
+      for (const [dateKey, price] of Object.entries(BTC_HISTORY_PRICES)) {
+        const date = new Date(dateKey);
+        if (date <= targetDate) {
+          const diff = targetDate - date;
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestDate = date;
+            closestPrice = price;
+          }
+        }
+      }
+
+      // 가장 가까운 미래 날짜 찾기 (보간을 위해)
+      let nextDate = null;
+      let nextPrice = null;
+      let minFutureDiff = Infinity;
+
+      for (const [dateKey, price] of Object.entries(BTC_HISTORY_PRICES)) {
+        const date = new Date(dateKey);
+        if (date > targetDate) {
+          const diff = date - targetDate;
+          if (diff < minFutureDiff) {
+            minFutureDiff = diff;
+            nextDate = date;
+            nextPrice = price;
+          }
+        }
+      }
+
+      // 보간법으로 가격 계산
+      if (closestDate && nextDate && closestPrice && nextPrice) {
+        const totalDiff = nextDate - closestDate;
+        const targetDiff = targetDate - closestDate;
+        const ratio = targetDiff / totalDiff;
+        return closestPrice + (nextPrice - closestPrice) * ratio;
+      }
+
+      // 보간 불가능하면 가장 가까운 과거 가격 반환
+      if (closestPrice) {
+        return closestPrice;
+      }
+
+      // 모든 데이터가 미래면 첫 번째 데이터 반환
+      const firstDate = Object.keys(BTC_HISTORY_PRICES).sort()[0];
+      return BTC_HISTORY_PRICES[firstDate];
+    }
 
     // 프리셋 날짜 설정
     function setPresetDate(date, label) {
@@ -505,31 +689,82 @@
       }
     });
 
-    // CoinGecko API로 과거 가격 가져오기
+    // 과거 가격 가져오기 (정적 데이터 사용, CORS 문제 없음)
     async function fetchBTCPrice(date) {
       try {
-        // CoinGecko API는 dd-mm-yyyy 형식 필요
-        const dateParts = date.split("-");
-        const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-        const url = `https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${formattedDate}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.market_data?.current_price?.usd ?? null;
+        // 입력된 날짜 검증
+        const dateObj = new Date(date);
+        if (isNaN(dateObj.getTime())) {
+          console.error("Invalid date:", date);
+          return null;
+        }
+
+        // 2010년 이전이면 null 반환
+        if (dateObj < new Date("2010-01-01")) {
+          console.warn("Date is too early, before Bitcoin existed");
+          return null;
+        }
+
+        // 오늘 이후면 null 반환
+        if (dateObj > new Date()) {
+          console.warn("Date is in the future");
+          return null;
+        }
+
+        // 정적 데이터에서 가격 가져오기
+        const price = getBTCPriceForDate(date);
+        
+        if (!price || price <= 0) {
+          console.error("Could not find price for date:", date);
+          return null;
+        }
+
+        return price;
       } catch (error) {
         console.error("Error fetching BTC price:", error);
         return null;
       }
     }
 
-    // 현재 BTC 가격 가져오기
+    // 현재 BTC 가격 가져오기 (Binance API만 사용, CORS 문제 없음)
     async function fetchCurrentBTCPrice() {
       try {
-        const url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.bitcoin?.usd ?? null;
+        const binanceResponse = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT");
+        
+        if (!binanceResponse.ok) {
+          throw new Error(`HTTP error! status: ${binanceResponse.status}`);
+        }
+
+        const binanceData = await binanceResponse.json();
+        const price = parseFloat(binanceData.price);
+        
+        if (price && price > 0) {
+          return price;
+        }
+
+        throw new Error("Invalid price from Binance");
       } catch (error) {
         console.error("Error fetching current BTC price:", error);
+        // 재시도
+        return await fetchCurrentBTCPriceAlternative();
+      }
+    }
+
+    // 대체 방법으로 현재 가격 가져오기 (Binance만 사용)
+    async function fetchCurrentBTCPriceAlternative() {
+      try {
+        // Binance 공개 API (CORS 허용, 가장 안정적)
+        const binanceResponse = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT");
+        if (binanceResponse.ok) {
+          const binanceData = await binanceResponse.json();
+          const price = parseFloat(binanceData.price);
+          if (price && price > 0) {
+            return price;
+          }
+        }
+        return null;
+      } catch (error) {
+        console.error("Error fetching current BTC price (alternative):", error);
         return null;
       }
     }
@@ -544,13 +779,10 @@
         currentDate.setMonth(start.getMonth() + i);
         const dateStr = currentDate.toISOString().split("T")[0];
         
+        // 정적 데이터에서 가격 가져오기 (비동기지만 즉시 반환)
         const price = await fetchBTCPrice(dateStr);
-        if (price) {
+        if (price && price > 0) {
           totalBTC += monthlyAmount / price;
-        }
-        // API 호출 제한을 피하기 위해 약간의 딜레이
-        if (i < months - 1) {
-          await new Promise(resolve => setTimeout(resolve, 100));
         }
       }
       
@@ -601,6 +833,11 @@
       document.getElementById("loading").style.display = "block";
       document.getElementById("output").classList.remove("result-main");
       document.getElementById("output").style.display = "none";
+      
+      const loadingDetail = document.getElementById("loadingDetail");
+      if (loadingDetail) {
+        loadingDetail.textContent = "";
+      }
 
       try {
         let btcAmount;
@@ -608,25 +845,58 @@
 
         if (buyMode === "lump") {
           // 일시 매수
+          if (loadingDetail) loadingDetail.textContent = "과거 비트코인 가격 조회 중...";
           btcPast = await fetchBTCPrice(dateInput);
           if (!btcPast) {
-            alert("해당 날짜의 가격 데이터를 찾을 수 없습니다! 😢");
-            document.getElementById("loading").style.display = "none";
+            document.getElementById("loading").innerHTML = `
+              <div style="color: #ff6b6b; margin: 20px 0;">
+                <p style="font-size: 18px; margin-bottom: 12px;">⚠️ 해당 날짜의 가격 데이터를 찾을 수 없습니다</p>
+                <p style="font-size: 14px; opacity: 0.8;">
+                  날짜를 확인하거나 다른 날짜를 선택해주세요.
+                </p>
+              </div>
+            `;
             return;
           }
           btcAmount = amount / btcPast;
         } else {
           // DCA 적립식
+          if (loadingDetail) loadingDetail.textContent = `적립식 투자 계산 중... (${dcaMonths}개월)`;
           const monthlyAmount = amount / dcaMonths;
           btcAmount = await calculateDCA(dateInput, monthlyAmount, dcaMonths);
           // 평균 가격 계산 (대략적으로)
           btcPast = amount / btcAmount;
         }
 
-        const btcNow = await fetchCurrentBTCPrice();
+        // 현재 가격 가져오기 (재시도 포함)
+        if (loadingDetail) loadingDetail.textContent = "현재 비트코인 가격 조회 중...";
+        let btcNow = await fetchCurrentBTCPrice();
         if (!btcNow) {
-          alert("현재 가격을 가져올 수 없습니다! 😢");
-          document.getElementById("loading").style.display = "none";
+          // 재시도 (최대 3번)
+          document.getElementById("loading").innerHTML = "가격 정보를 다시 불러오는 중... (재시도 중)";
+          for (let retry = 0; retry < 3; retry++) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기
+            btcNow = await fetchCurrentBTCPrice();
+            if (btcNow) break;
+          }
+        }
+        
+        if (!btcNow) {
+          document.getElementById("loading").innerHTML = `
+            <div style="color: #ff6b6b; margin: 20px 0;">
+              <p style="font-size: 18px; margin-bottom: 12px;">⚠️ 현재 가격을 가져올 수 없습니다</p>
+              <p style="font-size: 14px; opacity: 0.8; margin-bottom: 16px;">
+                네트워크 문제이거나 API 제한일 수 있습니다.<br>
+                잠시 후 다시 시도해주세요.
+              </p>
+              <button onclick="calculate()" style="padding: 12px 24px; background: #ff8a00; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 8px;">
+                🔄 다시 시도
+              </button>
+              <p style="font-size: 12px; opacity: 0.6; margin-top: 12px;">
+                팁: 브라우저를 새로고침하거나 잠시 후 다시 시도해보세요.
+              </p>
+            </div>
+          `;
           return;
         }
 
@@ -670,8 +940,17 @@
 
       } catch (error) {
         console.error("Calculation error:", error);
-        alert("계산 중 오류가 발생했습니다! 😢");
-        document.getElementById("loading").style.display = "none";
+        document.getElementById("loading").innerHTML = `
+          <div style="color: #ff6b6b; margin: 20px 0;">
+            <p style="font-size: 18px; margin-bottom: 12px;">❌ 계산 중 오류가 발생했습니다</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-bottom: 16px;">
+              ${error.message || "알 수 없는 오류가 발생했습니다."}
+            </p>
+            <button onclick="calculate()" style="padding: 12px 24px; background: #ff8a00; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 8px;">
+              🔄 다시 시도
+            </button>
+          </div>
+        `;
       }
     }
 
